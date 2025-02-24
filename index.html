@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiddify下载与使用免责声明</title>
+    <title>下载节点与使用免责声明</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,6 +34,50 @@
         .download-links a:hover {
             background-color: #0056b3;
         }
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+        .modal-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        .modal-footer {
+            text-align: right;
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
         /* 将下载链接放置在右下角 */
         .download-file {
             position: fixed;
@@ -47,7 +91,6 @@
     <div class="container">
         <h2>下载与告知</h2>
         <div class="agreement">
-            <!-- 这里是协议内容，可以替换为实际的协议条款 -->
             <h2>本应用来自Github开源软件，提供VPN网络访问服务（后称“科学上网”），我只提供以学习用途下载，科学上网时请勿发布不文明，不和谐，扰乱社会治安，等不良内容，不允许访问或传播低俗淫秽或性暗示图片或视频等，如有违反，本人，传播者以及软件开发者与Github平台不负任何责任，请自行承担，如您下载，即表示同意该协议</h2>
             <p>这是示例协议内容。请阅读完整协议后进行下载。</p>
         </div>
@@ -65,9 +108,58 @@
 
     <!-- 在右下角添加下载节点链接 -->
     <div class="download-file">
-        <a href="data:text/plain;charset=utf-8,vless://22a54b72-9c39-4bb0-97d0-41bbaaca2a67@163.172.122.94:19188?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.yahoo.com&fp=chrome&pbk=tVDaWxsy54q7yRNRdJ718Gyt2HDoh_3R2y_PX22hhjM&sid=95c93be9&type=tcp&headerType=none#dongtaiwang.com%E8%8A%82%E7%82%B92" download="节点.txt">
-            点击下载节点文件
-        </a>
+        <a href="javascript:void(0);" onclick="showModal()">点击下载节点文件</a>
     </div>
+
+    <!-- 模态框 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>节点信息</h2>
+            </div>
+            <div class="modal-body">
+                <p><strong>速率（下载）:</strong> 1000kb</p>
+                <p><strong>地址:</strong> 185.22.153.73</p>
+                <p><strong>端口:</strong> 56133</p>
+                <p><strong>UUID:</strong> af7f07dc-d726-4b1e-967d-dbb6c594999f</p>
+                <p><strong>加密方式:</strong> auto</p>
+                <p><strong>传输协议:</strong> ws</p>
+                <p><strong>路径:</strong> github.com/Alvin9999</p>
+                <p>
+                    <a href="data:text/plain;charset=utf-8,vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogImRvbmd0YWl3YW5nLmNvbVx1ODI4Mlx1NzBCOTEiLA0KICAiYWRkIjogIjE4NS4yMi4xNTMuNzMiLA0KICAicG9ydCI6ICI1NjEzMyIsDQogICJpZCI6ICJhZjdmMDdkYy1kNzI2LTRiMWUtOTY3ZC1kYmI2YzU5NDk5OWYiLA0KICAiYWlkIjogIjAiLA0KICAic2N5IjogImF1dG8iLA0KICAibmV0IjogIndzIiwNCiAgInR5cGUiOiAibm9uZSIsDQogICJob3N0IjogIiIsDQogICJwYXRoIjogImdpdGh1Yi5jb20vQWx2aW45OTk5IiwNCiAgInRscyI6ICIiLA0KICAic25pIjogIiIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9" download="节点.txt">点击下载节点文件</a>
+                </p>
+                <p><strong>速率（下载）:</strong> 1000kb</p>
+                <p><strong>地址:</strong> 163.172.122.94</p>
+                <p><strong>端口:</strong> 19188</p>
+                <p><strong>UUID:</strong> af7f07dc-d726-4b1e-967d-dbb6c594999f</p>
+                <p><strong>流控:</strong> xtls-rprx-vision</p>
+                <p><strong>传输协议:</strong> tcp</p>
+                <p><strong>传输层安全:</strong> reality</p>
+                <p><strong>serverName:</strong> www.yahoo.com</p>
+                 <p><strong>指纹:</strong> chrome</p>
+                 <p><strong>公钥:</strong> tVDaWxsy54q7yRNRdJ718Gyt2HDoh_3R2y_PX22hhjM</p>
+                <p>
+                    <a href="data:text/plain;charset=utf-8,vless://22a54b72-9c39-4bb0-97d0-41bbaaca2a67@163.172.122.94:19188?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.yahoo.com&fp=chrome&pbk=tVDaWxsy54q7yRNRdJ718Gyt2HDoh_3R2y_PX22hhjM&sid=95c93be9&type=tcp&headerType=none#dongtaiwang.com%E8%8A%82%E7%82%B92" download="节点.txt">点击下载节点文件</a>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 打开模态框
+        function showModal() {
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+        }
+    </script>
+
 </body>
 </html>
