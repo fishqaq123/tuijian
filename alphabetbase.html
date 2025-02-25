@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节点信息</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+        .container { max-width: 600px; margin: auto; text-align: left; }
+        .node-info { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button onclick="goBack()">返回</button>
+        <h2>节点列表</h2>
+        <div id="nodes">加载中...</div>
+    </div>
+
+    <script>
+        async function getPing(ip) {
+            try {
+                let response = await fetch(`https://yourserver.com/api/ping?ip=${ip}`);
+                let data = await response.json();
+                return data.ping;  // 服务器返回的 ping 值
+            } catch (e) {
+                return "未知";  // 服务器不可用时
+            }
+        }
+
+        async function fetchNodes() {
+            const nodes = [
+                { name: "节点 1", ip: "185.22.153.73", port: "56133", protocol: "ws", country: "荷兰", speed: 1000 },
+                { name: "节点 2", ip: "163.172.122.94", port: "19188", protocol: "tcp", country: "法国", speed: 800 }
+            ];
+
+            const container = document.getElementById("nodes");
+            container.innerHTML = "";
+
+            for (const node of nodes) {
+                node.ping = await getPing(node.ip);
+                const div = document.createElement("div");
+                div.className = "node-info";
+                div.innerHTML = `
+                    <h3>${node.name}</h3>
+                    <p><strong>加载速率:</strong> ${node.speed}kb</p>
+                    <p><strong>IP:</strong> ${node.ip}</p>
+                    <p><strong>端口:</strong> ${node.port}</p>
+                    <p><strong>通讯协议:</strong> ${node.protocol}</p>
+                    <p><strong>延时:</strong> ${node.ping}ms</p>
+                    <p><strong>国家:</strong> ${node.country}</p>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        fetchNodes();
+    </script>
+</body>
+</html>
