@@ -46,73 +46,123 @@
     button.back-button:hover {
       background-color: #218838;
     }
+    #search-box {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <!-- 返回按钮 -->
-    <button class="back-button" onclick="https://fishqaq123.github.io/tuijian/indexnew.html">返回</button>
+    <button class="back-button" onclick="window.location.href='https://fishqaq123.github.io/tuijian/indexnew.html'">返回</button>
     <h2>节点列表</h2>
-    
+
+    <!-- 搜索框 -->
+    <input type="text" id="search-box" placeholder="🔍 搜索国家或 IP..." oninput="filterNodes()">
+
     <!-- 节点信息显示区 -->
     <div id="nodes">加载中...</div>
   </div>
   
   <script>
     // 弹出警告信息
-    alert("⚠️ 在使用节点时不要 DDOS，不要发送垃圾邮件！");
+    alert("⚠️ 在使用节点时不要 DDOS，不要发送垃圾邮件！(ping暂不可用，不确保每个节点都能用）");
 
     // 预留的接口：请求服务器接口获取 ping 值
     async function getPing(ip) {
       try {
-        // 这里用你自己的服务器接口替换 yourserver.com，
-        // 例如：https://api.yourdomain.com/ping?ip=...
         const response = await fetch(`https://yourserver.com/api/ping?ip=${ip}`);
         const data = await response.json();
-        return data.ping;  // 期望服务器返回形如 { ping: 50 } 的 JSON 数据
+        return data.ping;  
       } catch (e) {
         return "未知";
       }
     }
-    
-    // 获取并显示节点信息
+
+    const nodes = [
+      {
+        name: "节点 1",
+        ip: "185.22.153.73",
+        port: "56133",
+        protocol: "ws",
+        country: "荷兰",
+        speed: 1000,
+        downloadContent: "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogImRvbmd0YWl3YW5nLmNvbVx1ODI4Mlx1NzBCOTEiLA0KICAiYWRkIjogIjE4NS4yMi4xNTMuNzMiLA0KICAicG9ydCI6ICIyNjIxMCIsDQogICJpZCI6ICJhZjdmMDdkYy1kNzI2LTRiMWUtOTY3ZC1kYmI2YzU5NDk5OWYiLA0KICAiYWlkIjogIjAiLA0KICAic2N5IjogImF1dG8iLA0KICAibmV0IjogIndzIiwNCiAgInR5cGUiOiAibm9uZSIsDQogICJob3N0IjogIiIsDQogICJwYXRoIjogImdpdGh1Yi5jb20vQWx2aW45OTk5IiwNCiAgInRscyI6ICIiLA0KICAic25pIjogIiIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9"
+      },
+      {
+        name: "节点 2",
+        ip: "163.172.122.94",
+        port: "19188",
+        protocol: "tcp",
+        country: "法国",
+        speed: 1000,
+        downloadContent: "vless://22a54b72-9c39-4bb0-97d0-41bbaaca2a67@163.172.122.94:19188?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.yahoo.com&fp=chrome&pbk=tVDaWxsy54q7yRNRdJ718Gyt2HDoh_3R2y_PX22hhjM&sid=95c93be9&type=tcp&headerType=none#dongtaiwang.com%E8%8A%82%E7%82%B92"
+      },
+      {
+        name: "节点 3",
+        ip: "dongtaiwang5.com",
+        port: "20001",
+        protocol: "ssr",
+        country: "未知",
+        speed: "1000",
+        downloadContent: "ssr://ZG9uZ3RhaXdhbmc1LmNvbToyMDAwMTphdXRoX2NoYWluX2E6Y2hhY2hhMjAtaWV0ZjpwbGFpbjpaRzl1WjNSaGFYZGhibWN1WTI5dC8_b2Jmc3BhcmFtPSZyZW1hcmtzPVpHOXVaM1JoYVhkaGJtY3VZMjl0NXJTYjVwMko1NS0y"
+      },
+      {
+        name: "节点 4",
+        ip: "46.17.42.24",
+        port: "23355",
+        protocol: "ss",
+        country: "未知",
+        speed: "1000",
+        downloadContent: "ss://YWVzLTI1Ni1nY206ZG9uZ3RhaXdhbmcuY29t@46.17.42.24:23355#dongtaiwang.com%E8%8A%82%E7%82%B9ss"
+      },
+            {
+        name: "节点 5",
+        ip: "资料暂缺",
+        port: "暂缺",
+        protocol: "vmess",
+        country: "美国",
+        speed: "Null",
+        downloadContent: "vmess://eyJ2IjogIjIiLCAicHMiOiAiXHU3ZjhlXHU1NmZkIENsb3VkRmxhcmVcdTgyODJcdTcwYjkiLCAiYWRkIjogIjE0MS4xMDEuMTE1LjY1IiwgInBvcnQiOiAiODAiLCAiaWQiOiAiNWY3NTFjNmUtNTBiMS00Nzk3LWJhOGUtNmZmZTMyNGEwYmNlIiwgImFpZCI6ICIwIiwgInNjeSI6ICJhdXRvIiwgIm5ldCI6ICJ3cyIsICJ0eXBlIjogIm5vbmUiLCAiaG9zdCI6ICJkcDMuc2Nwcm94eS50b3AiLCAicGF0aCI6ICIvc2hpcmtlciIsICJ0bHMiOiAiIiwgInNuaSI6ICIiLCAiYWxwbiI6ICIifQ=="
+      },
+            {
+        name: "节点 6",
+        ip: "暂缺",
+        port: "暂缺",
+        protocol: "vmess",
+        country: "美国",
+        speed: "Null",
+        downloadContent: "vmess://eyJ2IjogIjIiLCAicHMiOiAiXHU3ZjhlXHU1NmZkIENsb3VkRmxhcmVcdTgyODJcdTcwYjkiLCAiYWRkIjogImZkLnNoYWJpamljaGFuZy5jb20iLCAicG9ydCI6ICI4MCIsICJpZCI6ICIwZjg5MjFlYy1mNjkxLTRlMDUtYWFhMi01ZDA5NjEzM2I2MDYiLCAiYWlkIjogIjAiLCAic2N5IjogImF1dG8iLCAibmV0IjogIndzIiwgInR5cGUiOiAibm9uZSIsICJob3N0IjogInpqZy5zaGFiaWppY2hhbmcuY29tIiwgInBhdGgiOiAiLyIsICJ0bHMiOiAiIiwgInNuaSI6ICIiLCAiYWxwbiI6ICIifQ=="
+      },
+            {
+        name: "节点 7",
+        ip: "暂缺",
+        port: "暂缺",
+        protocol: "vmess",
+        country: "美国",
+        speed: "Null",
+        downloadContent: "vmess://eyJ2IjogIjIiLCAicHMiOiAiXHU3ZjhlXHU1NmZkIENsb3VkRmxhcmVcdTgyODJcdTcwYjkiLCAiYWRkIjogImJsdWVob3N0LmNvbSIsICJwb3J0IjogNDQzLCAiaWQiOiAiMTJlZWQ1MDctOWE1OC00Y2E1LWY3YWYtMjg3MWU5YWFlNjg0IiwgImFpZCI6IDAsICJzY3kiOiAiYXV0byIsICJuZXQiOiAid3MiLCAiaG9zdCI6ICJjZG50cjIuZGlnaXNwb3J0LnNob3AiLCAicGF0aCI6ICIvMTk1NDQiLCAidGxzIjogInRscyJ9"
+      }
+    ];
+
     async function fetchNodes() {
-      // 节点数据数组，每个节点包含基本信息和下载文件内容
-      const nodes = [
-        {
-          name: "节点 1",
-          ip: "185.22.153.73",
-          port: "56133",
-          protocol: "ws",
-          country: "荷兰",
-          speed: 1000,
-          downloadContent: "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogImRvbmd0YWl3YW5nLmNvbVx1ODI4Mlx1NzBCOTEiLA0KICAiYWRkIjogIjE4NS4yMi4xNTMuNzMiLA0KICAicG9ydCI6ICI1NjEzMyIsDQogICJpZCI6ICJhZjdmMDdkYy1kNzI2LTRiMWUtOTY3ZC1kYmI2YzU5NDk5OWYiLA0KICAiYWlkIjogIjAiLA0KICAic2N5IjogImF1dG8iLA0KICAibmV0IjogIndzIiwNCiAgInR5cGUiOiAibm9uZSIsDQogICJob3N0IjogIiIsDQogICJwYXRoIjogImdpdGh1Yi5jb20vQWx2aW45OTk5IiwNCiAgInRscyI6ICIiLA0KICAic25pIjogIiIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9"
-        },
-        {
-          name: "节点 2",
-          ip: "163.172.122.94",
-          port: "19188",
-          protocol: "tcp",
-          country: "法国",
-          speed: 1000,
-          downloadContent: "vless://22a54b72-9c39-4bb0-97d0-41bbaaca2a67@163.172.122.94:19188?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.yahoo.com&fp=chrome&pbk=tVDaWxsy54q7yRNRdJ718Gyt2HDoh_3R2y_PX22hhjM&sid=95c93be9&type=tcp&headerType=none"
-        }
-      ];
-      
       const container = document.getElementById("nodes");
       container.innerHTML = "";
       
       for (const node of nodes) {
-        // 获取实时延时
         node.ping = await getPing(node.ip);
-        
-        // 为每个节点生成下载链接的 Blob URL
+
         const blob = new Blob([node.downloadContent], { type: "text/plain" });
         const blobUrl = URL.createObjectURL(blob);
         
-        // 构造节点显示区域
         const div = document.createElement("div");
         div.className = "node-info";
+        div.dataset.ip = node.ip.toLowerCase();
+        div.dataset.country = node.country.toLowerCase();
         div.innerHTML = `
           <h3>${node.name}</h3>
           <p><strong>加载速率:</strong> ${node.speed}kb</p>
@@ -126,13 +176,23 @@
         container.appendChild(div);
       }
     }
-    
-    // 返回上一级页面
-    function goBack() {
-      window.history.back();
+
+    function filterNodes() {
+      const searchValue = document.getElementById("search-box").value.toLowerCase();
+      const nodesList = document.querySelectorAll(".node-info");
+
+      nodesList.forEach(node => {
+        const ip = node.dataset.ip;
+        const country = node.dataset.country;
+        
+        if (ip.includes(searchValue) || country.includes(searchValue)) {
+          node.style.display = "block";
+        } else {
+          node.style.display = "none";
+        }
+      });
     }
-    
-    // 页面加载时获取节点信息
+
     fetchNodes();
   </script>
 </body>
